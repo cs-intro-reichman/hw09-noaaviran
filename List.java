@@ -85,34 +85,27 @@ public class List {
 
     /** GIVE If the given character exists in one of the CharData objects
      *  in this list, removes this CharData object from the list and returns
-     *  true. Otherwise, returns false. */
+     *  true. Otherwise, returns false. 
     public boolean remove(char chr) {
         Node current = first;
-        Node previous = null;
-        int nodeCounter = 1;
+    Node previous = null;
 
-        while (current != null)
-        {
-            if (current.cp.equals(chr))
-            {
-                if (nodeCounter == 1)
-                {
-                    first = first.next;
-                    return true;
-                }
-                else
-                {
-                    previous.next = current.next;
-                    return true;
-                }                    
+    while (current != null) {
+        if (current.cp.equals(chr)) {
+            if (previous == null) {
+               
+                first = first.next;
+            } else {
+                previous.next = current.next;
             }
-            previous = current;
-            current = current.next;
-            nodeCounter++;
+            return true;
         }
-        return false;
+        previous = current;
+        current = current.next;
     }
-
+    return false;
+    }
+*/
     /** Returns the CharData object at the specified index in this list. 
      *  If the index is negative or is greater than the size of this list, 
      *  throws an IndexOutOfBoundsException. */
@@ -154,4 +147,4 @@ public class List {
         // Returns an iterator that starts in that element
 	    return new ListIterator(current);
     }
-
+}
