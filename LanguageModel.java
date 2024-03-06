@@ -6,6 +6,7 @@ public class LanguageModel {
     // The map of this model.
     // Maps windows to lists of charachter data objects.
     HashMap<String, List> CharDataMap;
+
     
     // The window length used in this model.
     int windowLength;
@@ -37,46 +38,33 @@ public class LanguageModel {
         char character;
         In in = new In(fileName);
         for (int i = 0; i < windowLength; i++) {
-            window.append(in.readChar());
+            window += in.readChar();
         }
-        while (!(in.isEmpty())) {
+        while (!in.isEmpty()) {
             character = in.readChar();
+
             List probs = CharDataMap.get(window);
-            if (probs == null){
+            if (probs == null) {
                 probs = new List();
-                CharDataMap.put(window, probs);
+                charDataMap.put(window, probs);
             }
             probs.update(character);
             window = window + character;
             window = window.substring(1);
         }
-        for (List probs : CharDataMap.values())
+        for (List probs : charDataMap.values()) {
             calculateProbabilities(probs);
-	
-	}
-
+        }
+    }
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
 	public void calculateProbabilities(List probs) {				
         int totalCount = 0;
         for (int i = 0; i < probs.getSize(); i++) {
-            totalCount = totalCount + probs.get(i).count;
-        }
-
-        CharData first = probs.get(0);
-        double firstP = first.count / (double) totalCount;
-        first.p = firstP;
-        first.cp = firstP;
-
-        CharData prev = first;
-        CharData current;
-        for (int i = 1; i < probs.getSize(); i++) {
-            current = probs.get(i);
-            double p = current.count / (double) totalCount;
-            current.p = p;
-            current.cp = prev.cp + p;
-
-            prev = current;
+            CharData current = probs.get(i);
+            current.p = (double) current.count / charTotal;
+            totalProb += current.p;
+            current.cp = totalProb;
         }
 
 	}
@@ -106,25 +94,25 @@ public class LanguageModel {
 	 * @return the generated text
 	 */
 	public String generate(String initialText, int textLength) {
-		if (initialText.length() < windowLength){
+        if (initialText.length() < windowLength) {
             return initialText;
         }
+
         String window = initialText.substring(initialText.length() - windowLength);
-        String genText = window;
+        String generatedText = window;
         for (int i = 0; i < textLength; i++) {
-            List probs = CharDataMap.get(window);
-            if(probs != null){
-                char newChr = getRandomChar(probs);
-                genText = genText + newChr;
-                window = genText.substring(genText.length() - windowLength);
-            }
-            else {
-                return genText.toString();
+            List probs = charDataMap.get(window);
+            if (probs != null) {
+                char newChar = getRandomChar(probs);
+                generatedText = generatedText + newChar;
+                window = generatedText.substring(generatedText.length() - windowLength);
+            } else {
+                return generatedText;
             }
         }
-        return genText.toString();
-	}
- 
+
+        return generatedText;
+    }
 
 	
 
