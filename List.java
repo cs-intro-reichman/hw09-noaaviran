@@ -85,7 +85,7 @@ public class List {
 
     /** GIVE If the given character exists in one of the CharData objects
      *  in this list, removes this CharData object from the list and returns
-     *  true. Otherwise, returns false. 
+     *  true. Otherwise, returns false.*/ 
     public boolean remove(char chr) {
         Node current = first;
     Node previous = null;
@@ -105,7 +105,7 @@ public class List {
     }
     return false;
     }
-*/
+
     /** Returns the CharData object at the specified index in this list. 
      *  If the index is negative or is greater than the size of this list, 
      *  throws an IndexOutOfBoundsException. */
