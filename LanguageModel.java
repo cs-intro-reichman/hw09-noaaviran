@@ -58,39 +58,41 @@ public class LanguageModel {
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
 	public void calculateProbabilities(List probs) {				
-        int numOfChars = 0;
-        for (int i = 0; i < probs.getSize(); i++){
-            numOfChars = numOfChars + probs.get(i).count;
+        int totalCount = 0;
+        for (int i = 0; i < probs.getSize(); i++) {
+            totalCount = totalCount + probs.get(i).count;
         }
-        if (numOfChars > 0) {
-            CharData first = probs.get(0);
-            double firstP = (double) first.count / numOfChars;
-            first.p = firstP;
-            first.cp = firstP;
-    
-            CharData prev = first;
-            CharData current;
-            for (int i = 1; i < probs.getSize(); i++) {
-                current = probs.get(i);
-                double p = (double) current.count / numOfChars;
-                current.p = p;
-                current.cp = prev.cp + p;
-                prev = current;
-            }
+
+        CharData first = probs.get(0);
+        double firstP = first.count / (double) totalCount;
+        first.p = firstP;
+        first.cp = firstP;
+
+        CharData prev = first;
+        CharData current;
+        for (int i = 1; i < probs.getSize(); i++) {
+            current = probs.get(i);
+            double p = current.count / (double) totalCount;
+            current.p = p;
+            current.cp = prev.cp + p;
+
+            prev = current;
         }
 
 	}
 
     // Returns a random character from the given probabilities list.
 	public char getRandomChar(List probs) {
-		double rnd = randomGenerator.nextDouble();
+        double r = randomGenerator.nextDouble();
         int listSize = probs.getSize();
+
         for (int i = 0; i < listSize; i++) {
             CharData currentCharData = probs.get(i);
-            if (currentCharData.cp > rnd) {
-                return  currentCharData.chr;
+            if (currentCharData.cp > r) {
+                return currentCharData.chr;
             }
         }
+
         return probs.get(listSize - 1).chr;
 	}
 
@@ -117,10 +119,10 @@ public class LanguageModel {
                 window = genText.substring(genText.length() - windowLength);
             }
             else {
-                return genText;
+                return genText.toString();
             }
         }
-        return genText;
+        return genText.toString();
 	}
  
 
